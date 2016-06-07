@@ -13,6 +13,9 @@ import org.seckill.exception.SeckillException;
 import org.seckill.service.SeckillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.Date;
@@ -21,11 +24,12 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/6/6.
  */
+@Service
 public class SeckillServiceImpl implements SeckillService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    @Autowired
     private SeckillDao seckillDao;
-
+    @Autowired
     private SuccessKilledDao successKilledDao;
     //md5盐值字符串，用于混淆md5
     private final String slat = "asddfert456ewrt3%#$%234+a1sdfADFA1SD65456%^&%^$%&";
@@ -68,7 +72,10 @@ public class SeckillServiceImpl implements SeckillService {
 
     /**
      * 执行秒杀
-     *
+     * 使用注解方式声明事务的优点：
+     * 1.开发团队一致约定，明确开发风格。
+     * 2.保证事务方法执行的时间尽可能短，不要穿插其他网络操作，尽量剥离到事务之外
+     * 3.不是所有过程都要事务，读，或者只有一条修改记录，则不需要。
      * @param seckillId
      * @param userPhone
      * @param md5
@@ -77,8 +84,9 @@ public class SeckillServiceImpl implements SeckillService {
      * @throws SeckillCloseException
      * @throws RepeatKillException
      */
+    @Transactional
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException, SeckillCloseException, RepeatKillException {
-        if (md5 == null || md5.equals(getMD5(seckillId))) {
+        if (md5 == null || !md5.equals(getMD5(seckillId))) {
             throw new SeckillException("seckill data rewrite!");
         }
         Date nowTime = new Date();
@@ -89,7 +97,7 @@ public class SeckillServiceImpl implements SeckillService {
                 throw new SeckillCloseException("seckill is closed");
             } else {
                 //记录购买行为
-                int insertCount = successKilledDao.insertSucdessKilled(seckillId, userPhone);
+                int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
                 //唯一：seckillid，userphone
                 if (insertCount <= 0) {
                     //重复秒杀
@@ -97,13 +105,13 @@ public class SeckillServiceImpl implements SeckillService {
                 } else {
                     //秒杀成功
                     SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId);
-                    return new SeckillExecution(seckillId,SeckillStatEnum.SUCCESS);
+                    return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS);
                 }
             }
         } catch (SeckillCloseException e1) {
             throw e1;
         } catch (RepeatKillException e2) {
-            throw  e2;
+            throw e2;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             //所有编译期异常，转化为运行期异常，运行期异常，spring会给我们回滚操作
