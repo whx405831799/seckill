@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -84,5 +85,11 @@ public class SeckillController {
             return new SeckillResult<SeckillExecution>(false, seckillExecution);
         }
         return seckillResult;
+    }
+
+    @RequestMapping(value = "/time/now",method = RequestMethod.GET)
+    public SeckillResult<Long> time(){
+        Date date = new Date();
+        return  new SeckillResult<Long>(true,date.getTime());
     }
 }
