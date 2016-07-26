@@ -37,11 +37,16 @@ var seckill = {
                         $(this).addClass('disabled');
                         //2.发送秒杀请求执行秒杀
                         $.post(killUrl,{},function (result) {
+                            console.log(result);
                             if (result && result['success']){
                                 var killResult = result['data'];
                                 var state = killResult['state'];
                                 var stateInfo = killResult['stateInfo'];
                                 //3:显示秒杀结果
+                                node.html('<span class="label label-success">' + stateInfo);
+                            }else {
+                                var killResult = result['data'];
+                                var stateInfo = killResult['stateInfo'];
                                 node.html('<span class="label label-success">' + stateInfo);
                             }
                         });
