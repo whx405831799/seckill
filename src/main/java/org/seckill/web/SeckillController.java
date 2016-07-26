@@ -69,27 +69,29 @@ public class SeckillController {
         SeckillResult seckillResult;
         try {
             //可用springmvc validate
-            if(userPhone == null){
-                return seckillResult = new SeckillResult(false,"未注册");
+            if (userPhone == null) {
+                return seckillResult = new SeckillResult(false, "未注册");
             }
             SeckillExecution seckillExecution = seckillService.executeSeckill(seckillId, userPhone, md5);
+
             seckillResult = new SeckillResult(true, seckillExecution);
-        } catch (RepeatKillException e){
+        } catch (RepeatKillException e) {
             SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStatEnum.REPEAT_KILL);
             return new SeckillResult<SeckillExecution>(false, seckillExecution);
-        }catch (SeckillCloseException e){
+        } catch (SeckillCloseException e) {
             SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStatEnum.END);
             return new SeckillResult<SeckillExecution>(false, seckillExecution);
-        }catch (Exception e) {
+        } catch (Exception e) {
             SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStatEnum.INNER_ERROR);
             return new SeckillResult<SeckillExecution>(false, seckillExecution);
         }
         return seckillResult;
     }
 
-    @RequestMapping(value = "/time/now",method = RequestMethod.GET)
-    public SeckillResult<Long> time(){
+    @RequestMapping(value = "/time/now", method = RequestMethod.GET)
+    @ResponseBody
+    public SeckillResult<Long> time() {
         Date date = new Date();
-        return  new SeckillResult<Long>(true,date.getTime());
+        return new SeckillResult<Long>(true, date.getTime());
     }
 }

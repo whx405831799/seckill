@@ -28,33 +28,17 @@
             </tr>
             </thead>
             <tbody>
+            <c:forEach var="sk" items="${list}">
             <tr>
                 <th scope="row">1</th>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
+                <td>${sk.name}</td>
+                <td>${sk.number}</td>
+                <td><fmt:formatDate value="${sk.startTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                <td><fmt:formatDate value="${sk.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                <td><fmt:formatDate value="${sk.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                <td><a class="details-button" href="/seckill/${sk.seckillId}/detail">详细</a></td>
             </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-            </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>

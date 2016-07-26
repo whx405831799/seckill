@@ -11,9 +11,9 @@ public class SuccessKilled {
 
 	private Date createTime;
 
-	//¶à¶ÔÒ»
+	//å¤šå¯¹ä¸€
 	private Seckill seckill;
-	
+
 	public long getSeckillId() {
 		return seckillId;
 	}
@@ -46,8 +46,8 @@ public class SuccessKilled {
 		this.createTime = createTime;
 	}
 
-	
-	
+
+
 	public Seckill getSeckill() {
 		return seckill;
 	}
