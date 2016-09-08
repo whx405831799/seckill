@@ -45,6 +45,7 @@ public class SeckillServiceImpl implements SeckillService {
     //返回秒杀活动信息
     public Exposer exportSeckillUrl(long seckillId) {
         Seckill seckill = seckillDao.queryById(seckillId);
+        //优化点：缓存优化
         //没有id，则返回无此活动
         if (seckill == null) {
             return new Exposer(false, seckillId);
